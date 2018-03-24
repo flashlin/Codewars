@@ -23,9 +23,9 @@ namespace LetIsPlayDarts.Models
 
         public string GetScore(double x, double y)
         {
-            var pt = new Coordinate(x, y);
+            var point = new Coordinate(x, y);
 
-            var distance = GetDistance(Zero, pt) * 2;
+            var distance = GetDistance(Zero, point) * 2;
             if (distance > DoubleRingOuterCircle)
             {
                 return "X";
@@ -37,7 +37,7 @@ namespace LetIsPlayDarts.Models
                 return multipler;
             }
 
-            double baseScore = GetBaseScore(pt);
+            double baseScore = GetBaseScore(point);
             string score = $"{multipler}{baseScore}";
 
             return score;
