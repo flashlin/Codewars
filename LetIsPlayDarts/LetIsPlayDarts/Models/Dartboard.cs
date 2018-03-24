@@ -14,7 +14,7 @@ namespace LetIsPlayDarts.Models
         public static readonly double TripleRingOuterCircle = 214;
         public static readonly double DoubleRingInnerCircle = 324;
         public static readonly double DoubleRingOuterCircle = 340;
-        public static readonly int AreaAngle = 360 / 20;
+        public static readonly int AngleOfArea = 360 / 20;
         public static readonly Coordinate Zero = new Coordinate(0, 0);
 
         private readonly double[] _baseScoreOfAngles = { 20, 1, 18, 4, 13, 6, 10, 15, 2, 17, 3, 19, 7, 16, 8, 11, 14, 9, 12, 5 };
@@ -53,7 +53,7 @@ namespace LetIsPlayDarts.Models
         private int GetAreaNumber(Coordinate pt)
         {
             var angle = CalculateAngle(Zero, pt);
-            int area = (int)Math.Round(angle / AreaAngle);
+            int area = (int)Math.Round(angle / AngleOfArea);
             area = (area >= 20) ? 0 : area;
             return area;
         }
