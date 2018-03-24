@@ -37,15 +37,19 @@ namespace LetIsPlayDarts.Models
                 return multipler;
             }
 
-            var angle = CalculateAngle(Zero, pt);
-
-            int area = (int)Math.Round(angle / AreaAngle);
-            area = (area >= 20) ? 0 : area;
-
+            int area = GetAreaNumber(pt);
             double baseScore = _scoreOfAngles[area];
             string score = $"{multipler}{baseScore}";
 
             return score;
+        }
+
+        private int GetAreaNumber(Coordinate pt)
+        {
+            var angle = CalculateAngle(Zero, pt);
+            int area = (int)Math.Round(angle / AreaAngle);
+            area = (area >= 20) ? 0 : area;
+            return area;
         }
 
         private string GetMultipler(double distance)
