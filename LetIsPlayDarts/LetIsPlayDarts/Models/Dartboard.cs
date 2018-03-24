@@ -17,13 +17,9 @@ namespace LetIsPlayDarts.Models
         public static readonly int AreaAngle = 360 / 20;
         public static readonly Coordinate Zero = new Coordinate(0, 0);
 
-        private double[] _scoreOfAngles = { 20, 1, 18, 4, 13, 6, 10, 15, 2, 17, 3, 19, 7, 16, 8, 11, 14, 9, 12, 5 };
-        private double[] _distanceAreas = { BullsEye, Bull, TripleRingInnerCircle, TripleRingOuterCircle, DoubleRingInnerCircle, DoubleRingOuterCircle };
-        private string[] _multiple = { "DB", "SB", "", "T", "", "D" };
-
-        public Dartboard()
-        {
-        }
+        private readonly double[] _scoreOfAngles = { 20, 1, 18, 4, 13, 6, 10, 15, 2, 17, 3, 19, 7, 16, 8, 11, 14, 9, 12, 5 };
+        private readonly double[] _distanceAreas = { BullsEye, Bull, TripleRingInnerCircle, TripleRingOuterCircle, DoubleRingInnerCircle, DoubleRingOuterCircle };
+        private readonly string[] _multiplier = { "DB", "SB", "", "T", "", "D" };
 
         public string GetScore(double x, double y)
         {
@@ -35,23 +31,28 @@ namespace LetIsPlayDarts.Models
                 return "X";
             }
 
-            int distanceArea = GetDistanceArea(distance);
-            string multiple = $"{_multiple[distanceArea]}";
-
-            if (multiple.Length == 2)
+            string multipler = GetMultipler(distance);
+            if (multipler.Length == 2)
             {
-                return multiple;
+                return multipler;
             }
 
             var angle = CalculateAngle(Zero, pt);
 
-            int area = (int) Math.Round(angle / AreaAngle);
+            int area = (int)Math.Round(angle / AreaAngle);
             area = (area >= 20) ? 0 : area;
 
             double baseScore = _scoreOfAngles[area];
-            string score = $"{multiple}{baseScore}";
+            string score = $"{multipler}{baseScore}";
 
             return score;
+        }
+
+        private string GetMultipler(double distance)
+        {
+            int distanceArea = GetDistanceArea(distance);
+            string multiple = $"{_multiplier[distanceArea]}";
+            return multiple;
         }
 
         protected int GetDistanceArea(double distance)
