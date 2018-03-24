@@ -47,8 +47,9 @@ namespace LetIsPlayDarts.Models
 
             var angle = CalculateAngle(Zero, pt);
 
-            int area = (int)Math.Round(angle / AreaAngle);
+            int area = (int) Math.Round(angle / AreaAngle);
             area = (area >= 20) ? 0 : area;
+
             double baseScore = _angleScores[area];
 
             int distanceArea = GetDistanceArea(distance);
@@ -72,14 +73,19 @@ namespace LetIsPlayDarts.Models
         protected double CalculateAngle(Coordinate a, Coordinate b)
         {
             double angle = Math.Atan2(b.Y - a.Y, b.X - a.X) * 180 / Math.PI;
-            if (90 >= angle && angle > 0)
+            if (90 >= angle && angle >= 0)
             {
-                return angle - 45;
+                return 90 - angle;
             }
 
             if (180 >= angle && angle > 90)
             {
                 return 180 - Math.Abs(angle) + 180 + 90;
+            }
+
+            if (angle < -90)
+            {
+                return Math.Abs(angle) - 90 + 180;
             }
 
             return Math.Abs(angle) + 90;

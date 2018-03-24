@@ -18,6 +18,7 @@ namespace LetIsPlayDartTests
         [TestCase("7", -73.905, -95.94)]
         [TestCase("T2", 55.53, -87.95)]
         [TestCase("D9", -145.19, 86.53)]
+        [TestCase("13", 87.868, 23.420)]
         public void GetScoreTest(string expected, double x, double y)
         {
             var dartboard = new Dartboard();
