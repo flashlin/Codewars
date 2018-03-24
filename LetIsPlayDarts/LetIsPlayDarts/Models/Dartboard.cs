@@ -17,7 +17,7 @@ namespace LetIsPlayDarts.Models
         public static readonly int AreaAngle = 360 / 20;
         public static readonly Coordinate Zero = new Coordinate(0, 0);
 
-        private readonly double[] _scoreOfAngles = { 20, 1, 18, 4, 13, 6, 10, 15, 2, 17, 3, 19, 7, 16, 8, 11, 14, 9, 12, 5 };
+        private readonly double[] _baseScoreOfAngles = { 20, 1, 18, 4, 13, 6, 10, 15, 2, 17, 3, 19, 7, 16, 8, 11, 14, 9, 12, 5 };
         private readonly double[] _distanceAreas = { BullsEye, Bull, TripleRingInnerCircle, TripleRingOuterCircle, DoubleRingInnerCircle, DoubleRingOuterCircle };
         private readonly string[] _multiplier = { "DB", "SB", "", "T", "", "D" };
 
@@ -37,11 +37,17 @@ namespace LetIsPlayDarts.Models
                 return multipler;
             }
 
-            int area = GetAreaNumber(pt);
-            double baseScore = _scoreOfAngles[area];
+            double baseScore = GetBaseScore(pt);
             string score = $"{multipler}{baseScore}";
 
             return score;
+        }
+
+        private double GetBaseScore(Coordinate pt)
+        {
+            int area = GetAreaNumber(pt);
+            double baseScore = _baseScoreOfAngles[area];
+            return baseScore;
         }
 
         private int GetAreaNumber(Coordinate pt)
