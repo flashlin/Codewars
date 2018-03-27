@@ -10,6 +10,43 @@ namespace SimpleFun57_RunnersMeetings.Models
     {
         public int RunnersMeetings(int[] startPositions, int[] speeds)
         {
+            List<Player> players = CreatePlayerList(startPositions, speeds);
+
+            var meetings = new Dictionary<Meeting, List<Player>>();
+            for (int i = 0; i < players.Count-1; i++)
+            {
+                var front = players[i];
+                for (int j = i + 1; j < players.Count; j++)
+                {
+                    var back = players[j];
+                    if (CanBump(front, back))
+                    {
+                        AddToMeeting(meetings, front, back);
+                    }
+                }
+            }
+            if (meetings.Count > 0)
+            {
+                return meetings.Values.Max(x => x.Count);
+            }
+            return -1;
+        }
+
+        private void AddToMeeting(Dictionary<Meeting, List<Player>> meetings, Player front, Player back)
+        {
+            var meeting = new Meeting(front, back);
+            if (!meetings.ContainsKey(meeting))
+            {
+                meetings[meeting] = new List<Player>();
+            }
+            if (!meetings[meeting].Contains(front))
+                meetings[meeting].Add(front);
+            if (!meetings[meeting].Contains(back))
+                meetings[meeting].Add(back);
+        }
+
+        private static List<Player> CreatePlayerList(int[] startPositions, int[] speeds)
+        {
             var players = new List<Player>();
             for (int i = 0; i < startPositions.Length; i++)
             {
@@ -20,65 +57,33 @@ namespace SimpleFun57_RunnersMeetings.Models
                 };
                 players.Add(player);
             }
-            return Bump(players);
+
+            players = players.OrderByDescending(x => x.StartPosition).ToList();
+
+            return players;
         }
 
-        private int Bump(List<Player> players)
+        protected bool CanBump(Player front, Player back)
         {
-            int bumpCount = 0;
-            if (IsBump(players[0], players[1]))
-            {
-                bumpCount++;
-            }
-
-            if (players.Count <= 2)
-            {
-                if (bumpCount > 0) return 2;
-                return -1;
-            }
-
-            if (IsBump(players[0], players[2]))
-            {
-                bumpCount++;
-            }
-
-            if (IsBump(players[1], players[2]))
-            {
-                bumpCount++;
-            }
-
-            if (bumpCount == 3)
-            {
-                return 3;
-            }
-
-            if (bumpCount > 0)
-            {
-                return 2;
-            }
-
-            return -1;
+            return front.Speed < back.Speed;
         }
 
-        private void Bump(List<Player> players, int start)
+        public struct Meeting
         {
-            if ((start + 1) < players.Count)
+            public Meeting(Player front, Player back)
             {
-                IsBump(players[start], players[start + 1]);
-                Bump(players, start + 1);
+                Time = (front.StartPosition - back.StartPosition) / (back.Speed - front.Speed);
+                Position = front.StartPosition + front.Speed * Time;
             }
-        }
 
-        protected bool IsBump(Player p1, Player p2)
-        {
-            double speed = p1.Speed - p2.Speed;
-            int distance = p2.StartPosition - p1.StartPosition;
-            if (speed == 0 && distance != 0)
+            public double Position { get; }
+
+            public double Time { get; }
+
+            public override string ToString()
             {
-                return false;
+                return $"{Time} {Position}";
             }
-            double time = (p2.StartPosition - p1.StartPosition) / speed;
-            return (time > 0);
         }
 
         public class Player
@@ -86,9 +91,9 @@ namespace SimpleFun57_RunnersMeetings.Models
             public int StartPosition { get; set; }
             public int Speed { get; set; }
 
-            public int GetDistance(int time)
+            public override string ToString()
             {
-                return StartPosition + Speed * time;
+                return $"{StartPosition} {Speed}";
             }
         }
     }

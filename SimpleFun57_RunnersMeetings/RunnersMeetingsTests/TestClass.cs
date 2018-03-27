@@ -31,8 +31,8 @@ namespace RunnersMeetingsTests
             var kata = new Kata();
 
             Assert.AreEqual(2, kata.RunnersMeetings(
-                new int[] { 28, 41, 16, 20, 24, 0, -41, -37, -929 }, 
-                new int[] { 23, 22, 29, 16, 12, 27, 10, 27, 17 }));
+                new int[] { -42, 14, -41, -4 },
+                new int[] { 18, 3, 29, 7 }));
         }
     }
 }
