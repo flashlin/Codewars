@@ -72,7 +72,7 @@ namespace SimpleFun57_RunnersMeetings.Models
         {
             public Meeting(Player front, Player back)
             {
-                Time = (front.StartPosition - back.StartPosition) / (back.Speed - front.Speed);
+                Time = (double)(front.StartPosition - back.StartPosition) / (back.Speed - front.Speed);
                 Position = front.StartPosition + front.Speed * Time;
             }
 

@@ -34,5 +34,15 @@ namespace RunnersMeetingsTests
                 new int[] { -42, 14, -41, -4 },
                 new int[] { 18, 3, 29, 7 }));
         }
+
+        [Test]
+        public void RandomTest2()
+        {
+            var kata = new Kata();
+
+            Assert.AreEqual(2, kata.RunnersMeetings(
+                new int[] { 18, -17, 53, 42, -1, -38, -50, -49 },
+                new int[] { 15, 28, 1, 29, 8, 13, 1, 20 }));
+        }
     }
 }
