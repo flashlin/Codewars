@@ -19,10 +19,7 @@ namespace SimpleFun57_RunnersMeetings.Models
                 for (int j = i + 1; j < players.Count; j++)
                 {
                     var back = players[j];
-                    if (CanBump(front, back))
-                    {
-                        AddToMeeting(meetings, front, back);
-                    }
+                    AddToMeeting(meetings, front, back);
                 }
             }
             if (meetings.Count > 0)
@@ -34,15 +31,18 @@ namespace SimpleFun57_RunnersMeetings.Models
 
         private void AddToMeeting(Dictionary<Meeting, List<Player>> meetings, Player front, Player back)
         {
-            var meeting = new Meeting(front, back);
+            if (!CanBump(front, back))
+            {
+                return;
+            }
+            Meeting meeting = new Meeting(front, back);
             if (!meetings.ContainsKey(meeting))
             {
                 meetings[meeting] = new List<Player>();
             }
-            if (!meetings[meeting].Contains(front))
-                meetings[meeting].Add(front);
-            if (!meetings[meeting].Contains(back))
-                meetings[meeting].Add(back);
+            List<Player> meetingRunners = meetings[meeting];
+            meetingRunners.TryAdd(front);
+            meetingRunners.TryAdd(back);
         }
 
         private static List<Player> CreatePlayerList(int[] startPositions, int[] speeds)
@@ -73,28 +73,37 @@ namespace SimpleFun57_RunnersMeetings.Models
             public Meeting(Player front, Player back)
             {
                 Time = (double)(front.StartPosition - back.StartPosition) / (back.Speed - front.Speed);
-                Position = front.StartPosition + front.Speed * Time;
             }
-
-            public double Position { get; }
 
             public double Time { get; }
 
             public override string ToString()
             {
-                return $"{Time} {Position}";
+                return $"{Time}";
             }
         }
+    }
 
-        public class Player
+    public class Player
+    {
+        public int StartPosition { get; set; }
+        public int Speed { get; set; }
+
+        public override string ToString()
         {
-            public int StartPosition { get; set; }
-            public int Speed { get; set; }
+            return $"{StartPosition} {Speed}";
+        }
+    }
 
-            public override string ToString()
+    public static class MeetingsExtension
+    {
+        public static void TryAdd(this List<Player> meetings, Player player)
+        {
+            if (meetings.Contains(player))
             {
-                return $"{StartPosition} {Speed}";
+                return;
             }
+            meetings.Add(player);
         }
     }
 }
