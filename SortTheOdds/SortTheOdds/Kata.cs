@@ -8,33 +8,30 @@ namespace SortTheOdds
         public static int[] SortArray(int[] array)
         {
             var odds = new List<int>();
-            AddOddsToList(array, odds);
-
+            var oddsIndex = new List<int>();
+            AddOddsToList(array, odds, oddsIndex);
             odds.Sort();
-
-            int idx = 0;
-            var result = new List<int>();
-            foreach (var number in array)
-            {
-                if (IsOdds(number))
-                {
-                    result.Add(odds[idx]);
-                    idx++;
-                }
-                else
-                {
-                    result.Add(number);
-                }
-            }
-            return result.ToArray();
+            PutOddsToArray(odds, oddsIndex, array);
+            return array;
         }
 
-        private static void AddOddsToList(int[] array, List<int> odds)
+        private static void PutOddsToArray(List<int> odds, List<int> oddsIndex, int[] array)
         {
-            foreach (var number in array)
+            for (int n = 0; n < odds.Count; n++)
             {
+                int idx = oddsIndex[n];
+                array[idx] = odds[n];
+            }
+        }
+
+        private static void AddOddsToList(int[] array, List<int> odds, List<int> oddsIndex)
+        {
+            for(int idx=0; idx<array.Length; idx++)
+            {
+                int number = array[idx];
                 if (IsOdds(number))
                 {
+                    oddsIndex.Add(idx);
                     odds.Add(number);
                 }
             }
