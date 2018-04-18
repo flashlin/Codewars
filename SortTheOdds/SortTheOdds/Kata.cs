@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace SortTheOdds
 {
@@ -7,34 +9,54 @@ namespace SortTheOdds
     {
         public static int[] SortArray(int[] array)
         {
-            var odds = new List<int>();
-            var oddsIndex = new List<int>();
-            AddOddsToList(array, odds, oddsIndex);
-            odds.Sort();
-            PutOddsToArray(odds, oddsIndex, array);
+            var odds = AddOddsToList(array);
+            array = PutOddsToArray(odds, array);
             return array;
         }
 
-        private static void PutOddsToArray(List<int> odds, List<int> oddsIndex, int[] array)
+        public class Odd
         {
-            for (int n = 0; n < odds.Count; n++)
+            public int Index { get; set; }
+            public int Number { get; set; }
+            public override string ToString()
             {
-                int idx = oddsIndex[n];
-                array[idx] = odds[n];
+                return $"[{Index}]{Number}";
             }
         }
 
-        private static void AddOddsToList(int[] array, List<int> odds, List<int> oddsIndex)
+        private static int[] PutOddsToArray(List<Odd> odds, int[] array)
         {
+            var oddsIndex = odds;
+            odds = odds.OrderBy(x => x.Number).ToList();
+            var result = new List<int>(array);
+            var item = odds.GetEnumerator();
+            item.MoveNext();
+            foreach (var indexer in oddsIndex)
+            {
+                int idx = indexer.Index;
+                result[idx] = item.Current.Number;
+                item.MoveNext();
+            }
+            return result.ToArray();
+        }
+
+        private static List<Odd> AddOddsToList(int[] array)
+        {
+            var result = new List<Odd>();
             for(int idx=0; idx<array.Length; idx++)
             {
                 int number = array[idx];
                 if (IsOdds(number))
                 {
-                    oddsIndex.Add(idx);
-                    odds.Add(number);
+                    var item = new Odd()
+                    {
+                        Index = idx,
+                        Number = number
+                    };
+                    result.Add(item);
                 }
             }
+            return result;
         }
 
         public static bool IsOdds(int number)
