@@ -27,7 +27,7 @@ namespace SortTheOdds
         private static int[] PutOddsToArray(List<Odd> odds, int[] array)
         {
             var oddsIndex = odds;
-            odds = odds.OrderBy(x => x.Number).ToList();
+            odds = SortOdds(odds);
             var result = new List<int>(array);
             var item = odds.GetEnumerator();
             item.MoveNext();
@@ -38,6 +38,12 @@ namespace SortTheOdds
                 item.MoveNext();
             }
             return result.ToArray();
+        }
+
+        private static List<Odd> SortOdds(List<Odd> odds)
+        {
+            odds = odds.OrderBy(x => x.Number).ToList();
+            return odds;
         }
 
         private static List<Odd> AddOddsToList(int[] array)
