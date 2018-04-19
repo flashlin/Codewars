@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace CarParkEscape
 {
@@ -26,6 +27,20 @@ namespace CarParkEscape
 
 
 			return m;
+		}
+
+		string DisplayCarPark(int[,] carpark)
+		{
+			var sb = new StringBuilder();
+			for (int y = 0; y < carpark.GetLength(0); y++)
+			{
+				for (int x = 0; x < carpark.GetLength(1); x++)
+				{
+					sb.AppendFormat("{0}", carpark[y,x]);
+				}
+				sb.AppendLine();
+			}
+			return sb.ToString();
 		}
 
 		private string GetString(IEnumerable<MoveType> g)
@@ -142,12 +157,16 @@ namespace CarParkEscape
 		private CarPos FindCarStartPos(int[,] carpark)
 		{
 			var startPos = new CarPos(0, 0);
-			for (int x = 0; x < carpark.GetLength(1); x++)
+			for (int y = 0; y < carpark.GetLength(0); y++)
 			{
-				if (carpark[0, x] == ParkingPlace)
+				for (int x = 0; x < carpark.GetLength(1); x++)
 				{
-					startPos.X = x;
-					return startPos;
+					if (carpark[y, x] == ParkingPlace)
+					{
+						startPos.X = x;
+						startPos.Y = y;
+						return startPos;
+					}
 				}
 			}
 			return startPos;
