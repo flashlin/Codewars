@@ -9,6 +9,8 @@ namespace CarParkEscape
 		Stack<MoveType> _step = new Stack<MoveType>();
 		private int[,] _gone;
 		readonly int Walked = 3;
+		private readonly int Staircases = 1;
+		private readonly int ParkingPlace = 2;
 
 		public string[] escape(int[,] carpark)
 		{
@@ -123,7 +125,7 @@ namespace CarParkEscape
 			{
 				return false;
 			}
-			return GetItem(carpark, pos) == 1;
+			return GetItem(carpark, pos) == Staircases;
 		}
 
 		bool CanMove(int[,] carpark, CarPos pos)
@@ -132,7 +134,7 @@ namespace CarParkEscape
 			{
 				return false;
 			}
-			if (carpark[pos.Y, pos.X] == 1) return true;
+			if (carpark[pos.Y, pos.X] == Staircases) return true;
 			if (_gone[pos.Y, pos.X] == Walked) return false;
 			return GetItem(carpark, pos) == 0;
 		}
@@ -142,7 +144,7 @@ namespace CarParkEscape
 			var startPos = new CarPos(0, 0);
 			for (int x = 0; x < carpark.GetLength(1); x++)
 			{
-				if (carpark[0, x] == 2)
+				if (carpark[0, x] == ParkingPlace)
 				{
 					startPos.X = x;
 					return startPos;
