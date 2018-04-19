@@ -8,24 +8,30 @@ namespace CarParkEscape
 	{
 		Stack<MoveType> _step = new Stack<MoveType>();
 		private int[,] _gone;
+		readonly int Walked = 3;
 
 		public string[] escape(int[,] carpark)
 		{
 			_gone = (int[,])carpark.Clone();
 			var startPos = FindCarStartPos(carpark);
-			Go(carpark, startPos, MoveType.None);
+			MoveCar(carpark, startPos, MoveType.None);
 
 			var m = _step.ToArray().Reverse()
 				.Where(x => x != MoveType.None)
 				.GroupAdjacentBy((prev, curr) => prev == curr)
-				.Select(g => GetString(g.First()) + g.Count().ToString())
+				.Select(g => GetString(g))
 				.ToArray();
 
 
 			return m;
 		}
 
-		string GetString(MoveType moveType)
+		private string GetString(IEnumerable<MoveType> g)
+		{
+			return GetDirectionString(g.First()) + g.Count().ToString();
+		}
+
+		string GetDirectionString(MoveType moveType)
 		{
 			switch (moveType)
 			{
@@ -39,16 +45,16 @@ namespace CarParkEscape
 			return "";
 		}
 
-		private bool Go(int[,] carpark, CarPos pos, MoveType moveType)
+		private bool MoveCar(int[,] carpark, CarPos pos, MoveType moveType)
 		{
 			_step.Push(moveType);
 
-			_gone[pos.Y, pos.X] = 3;
+			_gone[pos.Y, pos.X] = Walked;
 
 			if (IsEndFloor(carpark, pos))
 			{
-				int n = carpark.GetLength(1) - pos.X - 1;
-				for (int i = 0; i < n; i++)
+				int steps = carpark.GetLength(1) - pos.X - 1;
+				for (int i = 0; i < steps; i++)
 				{
 					_step.Push(MoveType.Right);
 				}
@@ -76,18 +82,18 @@ namespace CarParkEscape
 
 		private bool TryLeft(int[,] carpark, CarPos nextPos)
 		{
-			return CanMove(carpark, nextPos) && Go(carpark, nextPos, MoveType.Left);
+			return CanMove(carpark, nextPos) && MoveCar(carpark, nextPos, MoveType.Left);
 		}
 
 		private bool TryRight(int[,] carpark, CarPos nextPos)
 		{
-			return CanMove(carpark, nextPos) && Go(carpark, nextPos, MoveType.Right);
+			return CanMove(carpark, nextPos) && MoveCar(carpark, nextPos, MoveType.Right);
 		}
 
 		private bool TryDown(int[,] carpark, CarPos pos)
 		{
 			var nextPos = new CarPos(pos.X, pos.Y + 1);
-			return CanDown(carpark, pos) && Go(carpark, nextPos, MoveType.Down);
+			return CanDown(carpark, pos) && MoveCar(carpark, nextPos, MoveType.Down);
 		}
 
 		bool IsEndFloor(int[,] carpark, CarPos pos)
@@ -102,23 +108,32 @@ namespace CarParkEscape
 			return true;
 		}
 
-		bool CanDown(int[,] carpark, CarPos pos)
+		bool IsInCarparkRange(int[,] carpark, CarPos pos)
 		{
 			if (pos.X < 0) return false;
 			if (pos.X >= carpark.GetLength(1)) return false;
 			if (pos.Y < 0) return false;
 			if (pos.Y >= carpark.GetLength(0)) return false;
+			return true;
+		}
+
+		bool CanDown(int[,] carpark, CarPos pos)
+		{
+			if (!IsInCarparkRange(carpark, pos))
+			{
+				return false;
+			}
 			return GetItem(carpark, pos) == 1;
 		}
 
 		bool CanMove(int[,] carpark, CarPos pos)
 		{
-			if (pos.X < 0) return false;
-			if (pos.X >= carpark.GetLength(1)) return false;
-			if (pos.Y < 0) return false;
-			if (pos.Y >= carpark.GetLength(0)) return false;
+			if(!IsInCarparkRange(carpark, pos))
+			{
+				return false;
+			}
 			if (carpark[pos.Y, pos.X] == 1) return true;
-			if (_gone[pos.Y, pos.X] == 3) return false;
+			if (_gone[pos.Y, pos.X] == Walked) return false;
 			return GetItem(carpark, pos) == 0;
 		}
 
