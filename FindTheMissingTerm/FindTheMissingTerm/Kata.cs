@@ -22,10 +22,10 @@ namespace FindTheMissingTerm
                 incrementCounter[add]++;
             }
 
-            add = GetMissingIncrement(incrementCounter);
+            add = GetMostMissingIncrement(incrementCounter);
             if (IsIncrementSameCount(incrementCounter))
             {
-                add = incrementCounter.Keys.Min();
+                add = GetMissingMinIncrement(incrementCounter);
             }
 
             for (int i = 0; i < list.Count - 1; i++)
@@ -40,7 +40,12 @@ namespace FindTheMissingTerm
             return list[0];
         }
 
-        private static int GetMissingIncrement(Dictionary<int, int> incrementCounter)
+        private static int GetMissingMinIncrement(Dictionary<int, int> incrementCounter)
+        {
+            return incrementCounter.Keys.Min();
+        }
+
+        private static int GetMostMissingIncrement(Dictionary<int, int> incrementCounter)
         {
             var add1 = incrementCounter.FirstOrDefault(x => x.Value == incrementCounter.Values.Max()).Key;
             return add1;
