@@ -10,31 +10,27 @@ namespace FindTheMissingTerm
     {
         public static int FindMissing(List<int> list)
         {
-            Dsiplay(list);
-            var dic = new Dictionary<int, int>();
+            int add = 0;
+            var incrementCounter = new Dictionary<int, int>();
             for (int i = 0; i < list.Count - 1; i++)
             {
-                int add = list[i + 1] - list[i];
-                if (!dic.ContainsKey(add))
+                add = list[i + 1] - list[i];
+                if (!incrementCounter.ContainsKey(add))
                 {
-                    dic[add] = 0;
+                    incrementCounter[add] = 0;
                 }
-                dic[add]++;
+                incrementCounter[add]++;
             }
 
-
-
-            var add1 = dic.FirstOrDefault(x => x.Value == dic.Values.Max()).Key;
-
-            var count = dic.Where(x => x.Value == dic.Values.Max()).Count();
-            if (count == 2)
+            add = GetMissingIncrement(incrementCounter);
+            if (IsIncrementSameCount(incrementCounter))
             {
-                add1 = dic.Keys.Min();
+                add = incrementCounter.Keys.Min();
             }
 
             for (int i = 0; i < list.Count - 1; i++)
             {
-                int next = list[i] + add1;
+                int next = list[i] + add;
                 if (next != list[i + 1])
                 {
                     return next;
@@ -42,6 +38,18 @@ namespace FindTheMissingTerm
             }
 
             return list[0];
+        }
+
+        private static int GetMissingIncrement(Dictionary<int, int> incrementCounter)
+        {
+            var add1 = incrementCounter.FirstOrDefault(x => x.Value == incrementCounter.Values.Max()).Key;
+            return add1;
+        }
+
+        private static bool IsIncrementSameCount(Dictionary<int, int> incrementCounter)
+        {
+            var count = incrementCounter.Where(x => x.Value == incrementCounter.Values.Max()).Count();
+            return count == 2;
         }
 
         static void Dsiplay(List<int> list)
