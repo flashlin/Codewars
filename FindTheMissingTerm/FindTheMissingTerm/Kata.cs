@@ -10,23 +10,10 @@ namespace FindTheMissingTerm
     {
         public static int FindMissing(List<int> list)
         {
-            int add = 0;
             var incrementCounter = new Dictionary<int, int>();
-            for (int i = 0; i < list.Count - 1; i++)
-            {
-                add = list[i + 1] - list[i];
-                if (!incrementCounter.ContainsKey(add))
-                {
-                    incrementCounter[add] = 0;
-                }
-                incrementCounter[add]++;
-            }
+            ComputeIncrementCount(list, incrementCounter);
 
-            add = GetMostMissingIncrement(incrementCounter);
-            if (IsIncrementSameCount(incrementCounter))
-            {
-                add = GetMissingMinIncrement(incrementCounter);
-            }
+            int add = GetMissingIncrment(incrementCounter);
 
             for (int i = 0; i < list.Count - 1; i++)
             {
@@ -38,6 +25,33 @@ namespace FindTheMissingTerm
             }
 
             return list[0];
+        }
+
+        private static void ComputeIncrementCount(List<int> list, Dictionary<int, int> incrementCounter)
+        {
+            int add;
+            for (int i = 0; i < list.Count - 1; i++)
+            {
+                add = list[i + 1] - list[i];
+                if (!incrementCounter.ContainsKey(add))
+                {
+                    incrementCounter[add] = 0;
+                }
+
+                incrementCounter[add]++;
+            }
+        }
+
+        private static int GetMissingIncrment(Dictionary<int, int> incrementCounter)
+        {
+            int add;
+            add = GetMostMissingIncrement(incrementCounter);
+            if (IsIncrementSameCount(incrementCounter))
+            {
+                add = GetMissingMinIncrement(incrementCounter);
+            }
+
+            return add;
         }
 
         private static int GetMissingMinIncrement(Dictionary<int, int> incrementCounter)
